@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/account.css">
+</head>
+
+<body>
+    <main class="account-card">
+        <p class="eyebrow">New account</p>
+        <h1>Create your Feedo account</h1>
+        <p class="intro">Set up your login once, then use those credentials from the sign-in screen.</p>
+
+        <form id="accountForm" novalidate>
+            <div class="field">
+                <label for="accountName">Enter Name</label>
+                <input type="text" id="accountName" placeholder="Enter your name" required>
+                <p id="nameError" class="error-text">Please enter your name.</p>
+            </div>
+
+            <div class="field">
+                <label for="accountEmail">Email</label>
+                <input type="email" id="accountEmail" placeholder="Enter your email" required>
+                <p id="emailError" class="error-text">Enter a valid email.</p>
+            </div>
+
+            <div class="field">
+                <label for="accountPassword">Password</label>
+                <input type="password" id="accountPassword" placeholder="Create a password" required>
+                <p id="passwordError" class="error-text">Password must be at least 6 characters.</p>
+            </div>
+
+            <div class="field">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Re-enter your password" required>
+                <p id="confirmPasswordError" class="error-text">Passwords must match.</p>
+            </div>
+
+            <button type="submit" class="submit-btn">Create Account</button>
+            <p id="accountMessage" class="message" aria-live="polite"></p>
+            <p class="back-row">Already have an account? <a href="index.html">Back to Login</a></p>
+        </form>
+    </main>
+
+    <script src="js/account.js"></script>
+</body>
+
+</html>

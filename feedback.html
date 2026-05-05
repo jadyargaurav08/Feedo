@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/feedback.css">
+</head>
+
+<body>
+    <main class="box">
+        <h1>Share your feedback</h1>
+        <p class="intro">Tell us what worked, what did not, and how the experience felt from your side.</p>
+
+        <form id="feedbackForm" novalidate>
+            <div class="field">
+                <label>Name</label>
+                <h2 id="name" class="user-name">Guest</h2>
+                <p id="nameError" class="error">Please log in to submit feedback.</p>
+            </div>
+
+            <div class="field">
+                <label for="feedback">Feedback</label>
+                <textarea id="feedback" placeholder="Write your feedback" required></textarea>
+                <p id="feedbackError" class="error">Please enter feedback.</p>
+            </div>
+
+            <div class="field">
+                <label>Star Rating</label>
+                <div class="star-group" role="radiogroup" aria-label="Star rating">
+                    <input type="radio" id="star5" name="rating" value="5">
+                    <label for="star5" title="5 stars">&#9733;</label>
+
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4" title="4 stars">&#9733;</label>
+
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3" title="3 stars">&#9733;</label>
+
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2" title="2 stars">&#9733;</label>
+
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1" title="1 star">&#9733;</label>
+                </div>
+                <p id="ratingError" class="error">Please select a rating.</p>
+            </div>
+
+            <button type="submit">Submit Feedback</button>
+            <p id="successMessage" class="message"></p>
+        </form>
+
+        <a href="index.html">Back to Login</a>
+    </main>
+</body>
+<script src="js/feedback.js"></script>
+</html>
