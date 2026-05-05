@@ -11,6 +11,42 @@ document.addEventListener('DOMContentLoaded', function () {
     const feedbackError = document.getElementById('feedbackError');
     const ratingError = document.getElementById('ratingError');
     const successMessage = document.getElementById('successMessage');
+    const thankYouModal = document.getElementById('thankYouModal');
+    const thankYouClose = document.getElementById('thankYouClose');
+
+    function openThankYouModal() {
+        if (!thankYouModal) return;
+        thankYouModal.hidden = false;
+        // Force reflow so the transition runs
+        void thankYouModal.offsetWidth;
+        thankYouModal.classList.add('show');
+    }
+
+    function closeThankYouModal() {
+        if (!thankYouModal) return;
+        thankYouModal.classList.remove('show');
+        setTimeout(function () {
+            thankYouModal.hidden = true;
+        }, 250);
+    }
+
+    if (thankYouClose) {
+        thankYouClose.addEventListener('click', closeThankYouModal);
+    }
+
+    if (thankYouModal) {
+        thankYouModal.addEventListener('click', function (event) {
+            if (event.target === thankYouModal) {
+                closeThankYouModal();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && thankYouModal && !thankYouModal.hidden) {
+            closeThankYouModal();
+        }
+    });
 
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -65,8 +101,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             successMessage.style.color = '';
-            successMessage.textContent = 'Thank you for your feedback.';
+            successMessage.textContent = '';
             form.reset();
+            openThankYouModal();
         } catch (error) {
             successMessage.style.color = '#c2410c';
             successMessage.textContent = 'Server unavailable. Please try again.';
