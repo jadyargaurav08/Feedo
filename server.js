@@ -8,34 +8,44 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// Cache the mongoose connection across serverless invocations
-let cachedConnection = global.__mongooseConnection || null;
-
-async function connectToDatabase() {
-    if (cachedConnection) {
-        return cachedConnection;
-    }
-
-    if (!MONGODB_URI) {
-        throw new Error('Missing MONGODB_URI in environment variables.');
-    }
-
-    cachedConnection = await mongoose.connect(MONGODB_URI);
-    global.__mongooseConnection = cachedConnection;
-    console.log('Connected to MongoDB');
-    return cachedConnection;
+if (!MONGODB_URI) {
+    console.error('Missing MONGODB_URI in environment variables.');
+    process.exit(1);
 }
+
+mongoose
+    .connect(MONGODB_URI)
+    .then(() => {
+        console.log('Connected to MongoDB');
+    })
+    .catch((error) => {
+        console.error('Failed to connect to MongoDB:', error.message);
+        process.exit(1);
+    });
 
 const userSchema = new mongoose.Schema(
     {
-        name: { type: String, required: true, trim: true },
-        email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-        passwordHash: { type: String, required: true }
+        name: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            lowercase: true,
+            trim: true
+        },
+        passwordHash: {
+            type: String,
+            required: true
+        }
     },
     { timestamps: true }
 );
 
-const User = mongoose.models.User || mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
 const feedbackSchema = new mongoose.Schema(
     {
@@ -46,21 +56,10 @@ const feedbackSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-const Feedback = mongoose.models.Feedback || mongoose.model('Feedback', feedbackSchema);
+const Feedback = mongoose.model('Feedback', feedbackSchema);
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
-
-// Ensure DB is connected before handling API requests
-app.use('/api', async (req, res, next) => {
-    try {
-        await connectToDatabase();
-        next();
-    } catch (error) {
-        console.error('DB connection error:', error.message);
-        return res.status(500).json({ message: 'Database connection failed.' });
-    }
-});
 
 const isValidEmail = (email) => /.+@.+\..+/.test(email);
 
@@ -97,7 +96,6 @@ app.post('/api/auth/register', async (req, res) => {
 
         return res.status(201).json({ message: 'Account created.' });
     } catch (error) {
-        console.error('Register error:', error);
         return res.status(500).json({ message: 'Unable to create account right now.' });
     }
 });
@@ -129,7 +127,6 @@ app.post('/api/auth/login', async (req, res) => {
 
         return res.status(200).json({ message: 'Login successful.', name: user.name });
     } catch (error) {
-        console.error('Login error:', error);
         return res.status(500).json({ message: 'Unable to login right now.' });
     }
 });
@@ -156,23 +153,10 @@ app.post('/api/feedback', async (req, res) => {
         await Feedback.create({ name: normalizedName, feedback: normalizedFeedback, rating: parsedRating });
         return res.status(201).json({ message: 'Feedback saved.' });
     } catch (error) {
-        console.error('Feedback error:', error);
         return res.status(500).json({ message: 'Unable to save feedback right now.' });
     }
 });
 
-// Only listen when running locally (not in Vercel serverless)
-if (require.main === module) {
-    connectToDatabase()
-        .then(() => {
-            app.listen(PORT, () => {
-                console.log(`Server running on http://localhost:${PORT}`);
-            });
-        })
-        .catch((error) => {
-            console.error('Failed to connect to MongoDB:', error.message);
-            process.exit(1);
-        });
-}
-
-module.exports = app;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
